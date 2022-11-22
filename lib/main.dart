@@ -40,14 +40,20 @@ class NumberInputWidget extends StatefulWidget {
 }
 
 class _NumberInputWidgetState extends State<NumberInputWidget> {
+  List<DropdownMenuItem<String>> lengthMeasurements = const [
+    DropdownMenuItem(child: Text("Meter"), value: "1"),
+    DropdownMenuItem(child: Text("Centimeter"), value: ".01"),
+    DropdownMenuItem(child: Text("Kilometer"), value: "1000"),
+  ];
   final myController1 = TextEditingController();
   final myController2 = TextEditingController();
 
   double numberValue1 = 0;
   double numberValue2 = 0;
-  double conversionFactor = 100;
+  double conversionFactor = 1;
 
-  String dropdownValue = '1';
+  String conversionFactor1 = '1';
+  String conversionFactor2 = '1';
 
   @override
   void dispose() {
@@ -65,7 +71,7 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
         return;
       }
       numberValue1 = double.parse(text);
-      numberValue2 = numberValue1 / conversionFactor;
+      numberValue2 = numberValue1 * conversionFactor;
       myController2.text = numberValue2.toString();
     });
   }
@@ -79,7 +85,7 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
         return;
       }
       numberValue2 = double.parse(text);
-      numberValue1 = numberValue2 * conversionFactor;
+      numberValue1 = numberValue2 / conversionFactor;
       myController1.text = numberValue1.toString();
     });
   }
@@ -88,9 +94,8 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       DropdownButton<String>(
-          value: dropdownValue,
+          value: conversionFactor1,
           icon: const Icon(Icons.arrow_drop_down),
-          elevation: 16,
           style: const TextStyle(color: Colors.blue),
           underline: Container(
             height: 0,
@@ -99,14 +104,14 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
           onChanged: (String? value) {
             // This is called when the user selects an item.
             setState(() {
-              dropdownValue = value!;
+              conversionFactor1 = value!;
+              conversionFactor = double.parse(conversionFactor1) /
+                  double.parse(conversionFactor2);
+              print("Menu onChanged 1");
+              print(conversionFactor);
             });
           },
-          items: const [
-            DropdownMenuItem(child: Text("Meter"), value: "1"),
-            DropdownMenuItem(child: Text("Centimeter"), value: ".01"),
-            DropdownMenuItem(child: Text("Kilometer"), value: "1000"),
-          ]),
+          items: lengthMeasurements),
       TextField(
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)'))
@@ -119,6 +124,25 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
             labelText: 'type a number already'),
         onChanged: (text) => convert1(text),
       ),
+      DropdownButton<String>(
+          value: conversionFactor2,
+          icon: const Icon(Icons.arrow_drop_down),
+          style: const TextStyle(color: Colors.blue),
+          underline: Container(
+            height: 0,
+            color: Colors.blueAccent,
+          ),
+          onChanged: (String? value) {
+            // This is called when the user selects an item.
+            setState(() {
+              conversionFactor2 = value!;
+              conversionFactor = double.parse(conversionFactor1) /
+                  double.parse(conversionFactor2);
+              print("Menu onChanged 2");
+              print(conversionFactor);
+            });
+          },
+          items: lengthMeasurements),
       TextField(
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'(^\-?\d*\.?\d*)'))
