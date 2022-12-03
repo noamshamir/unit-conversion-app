@@ -1,8 +1,37 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
-NumberInputWidget input1 = NumberInputWidget();
-NumberInputWidget input2 = NumberInputWidget();
+final List<DropdownMenuItem<String>> temperatures = const [
+  DropdownMenuItem(child: Text("Celcius"), value: "2"),
+  DropdownMenuItem(child: Text("Fahrenheit"), value: "3"),
+  DropdownMenuItem(child: Text("Kelvin"), value: "4")
+];
+final List<DropdownMenuItem<String>> lengths = const [
+  DropdownMenuItem(child: Text("Kilometer"), value: "1000"),
+  DropdownMenuItem(child: Text("Hectometer"), value: "100"),
+  DropdownMenuItem(child: Text("Decameter"), value: "10"),
+  DropdownMenuItem(child: Text("Meter"), value: "1"),
+  DropdownMenuItem(child: Text("Decimeter"), value: "0.1"),
+  DropdownMenuItem(child: Text("Centimeter"), value: "0.01"),
+  DropdownMenuItem(child: Text("Millimeter"), value: "0.001"),
+  DropdownMenuItem(child: Text("Micrometer"), value: "0.000001"),
+  DropdownMenuItem(child: Text("Nanometer"), value: "0.000000001"),
+  DropdownMenuItem(child: Text("Miles"), value: "1609.344"),
+  DropdownMenuItem(child: Text("Yard"), value: "0.9144"),
+  DropdownMenuItem(child: Text("Foot"), value: "0.3048"),
+  DropdownMenuItem(child: Text("Inch"), value: "0.0254"),
+  DropdownMenuItem(child: Text("Nautical Mile"), value: "0.000539957"),
+  DropdownMenuItem(child: Text("Parsec"), value: "30856775812800000"),
+  DropdownMenuItem(child: Text("Light Year"), value: "9460730472580000"),
+  DropdownMenuItem(
+      child: Text("Planck Length"),
+      value: "161605000000000000000000000000000000")
+];
+
+String currentMeasurement = "lengths";
+
+ConversionForm input1 = ConversionForm();
+ConversionForm input2 = ConversionForm();
 void main() {
   runApp(MyApp());
 }
@@ -25,36 +54,59 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Unit Converter')),
-      body: NumberInputWidget(),
-    );
+        appBar: AppBar(
+            title: Text("Popup Menu on AppBar"),
+            backgroundColor: Colors.redAccent,
+            actions: [
+              PopupMenuButton(
+                  // add icon, by default "3 dot" icon
+                  icon: Icon(Icons.thermostat),
+                  itemBuilder: (context) {
+                    return [
+                      PopupMenuItem<int>(
+                        value: 0,
+                        child: Text("Temperature"),
+                      ),
+                      PopupMenuItem<int>(
+                        value: 1,
+                        child: Text("Volume"),
+                      ),
+                      PopupMenuItem<int>(
+                        value: 2,
+                        child: Text("Length"),
+                      ),
+                    ];
+                  },
+                  onSelected: (value) {
+                    if (value == 0) {
+                      currentMeasurement = "temperatures";
+                      print(currentMeasurement);
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => MyHomePage()));
+                    } else if (value == 1) {
+                      currentMeasurement = "volumes";
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => MyHomePage()));
+                    } else if (value == 2) {
+                      currentMeasurement = "lengths";
+                      print(currentMeasurement);
+                      Navigator.of(context).pushReplacement(MaterialPageRoute(
+                          builder: (context) => MyHomePage()));
+                    }
+                  })
+            ]),
+        body: ConversionForm());
   }
 }
 
-class NumberInputWidget extends StatefulWidget {
-  NumberInputWidget({super.key});
+class ConversionForm extends StatefulWidget {
+  ConversionForm({super.key});
 
   @override
-  State<NumberInputWidget> createState() => _NumberInputWidgetState();
+  State<ConversionForm> createState() => _ConversionFormState();
 }
 
-class _NumberInputWidgetState extends State<NumberInputWidget> {
-  List<DropdownMenuItem<String>> lengthMeasurements = const [
-    DropdownMenuItem(child: Text("Kilometer"), value: "1000"),
-    DropdownMenuItem(child: Text("Hectometer"), value: "100"),
-    DropdownMenuItem(child: Text("Decameter"), value: "10"),
-    DropdownMenuItem(child: Text("Meter"), value: "1"),
-    DropdownMenuItem(child: Text("Decimeter"), value: "0.1"),
-    DropdownMenuItem(child: Text("Centimeter"), value: "0.01"),
-    DropdownMenuItem(child: Text("Millimeter"), value: "0.001"),
-    DropdownMenuItem(child: Text("Micrometer"), value: "0.000001"),
-    DropdownMenuItem(child: Text("Nanometer"), value: "0.000000001"),
-    DropdownMenuItem(child: Text("Miles"), value: "1609.344"),
-    DropdownMenuItem(child: Text("Yard"), value: "0.9144"),
-    DropdownMenuItem(child: Text("Foot"), value: "0.3048"),
-    DropdownMenuItem(child: Text("Inch"), value: "0.0254"),
-  ];
-
+class _ConversionFormState extends State<ConversionForm> {
   final myController1 = TextEditingController();
   final myController2 = TextEditingController();
 
@@ -102,6 +154,43 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
 
   @override
   Widget build(BuildContext context) {
+    List<DropdownMenuItem<String>> measurements = [];
+    if (currentMeasurement == "lengths") {
+      measurements = const [
+        DropdownMenuItem(child: Text("Kilometer"), value: "1000"),
+        DropdownMenuItem(child: Text("Hectometer"), value: "100"),
+        DropdownMenuItem(child: Text("Decameter"), value: "10"),
+        DropdownMenuItem(child: Text("Meter"), value: "1"),
+        DropdownMenuItem(child: Text("Decimeter"), value: "0.1"),
+        DropdownMenuItem(child: Text("Centimeter"), value: "0.01"),
+        DropdownMenuItem(child: Text("Millimeter"), value: "0.001"),
+        DropdownMenuItem(child: Text("Micrometer"), value: "0.000001"),
+        DropdownMenuItem(child: Text("Nanometer"), value: "0.000000001"),
+        DropdownMenuItem(child: Text("Miles"), value: "1609.344"),
+        DropdownMenuItem(child: Text("Yard"), value: "0.9144"),
+        DropdownMenuItem(child: Text("Foot"), value: "0.3048"),
+        DropdownMenuItem(child: Text("Inch"), value: "0.0254"),
+        DropdownMenuItem(child: Text("Nautical Mile"), value: "0.000539957"),
+        DropdownMenuItem(child: Text("Parsec"), value: "30856775812800000"),
+        DropdownMenuItem(child: Text("Light Year"), value: "9460730472580000"),
+        DropdownMenuItem(
+          child: Text("Planck Length"),
+          value: "161605000000000000000000000000000000",
+        )
+      ];
+    } else if (currentMeasurement == "temperatures") {
+      measurements = const [
+        DropdownMenuItem(child: Text("Celcius"), value: "1"),
+        DropdownMenuItem(child: Text("Fahrenheit"), value: "3"),
+        DropdownMenuItem(child: Text("Kelvin"), value: "4"),
+      ];
+    } else if (currentMeasurement == "volumes") {
+      measurements = const [
+        DropdownMenuItem(child: Text("Liter"), value: "1"),
+      ];
+    }
+    print("HERE");
+    print(measurements);
     return Column(children: <Widget>[
       Padding(
           padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
@@ -113,9 +202,7 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
                 TextInputType.numberWithOptions(decimal: true, signed: true),
             controller: myController1,
             decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.numbers),
-                labelText: 'type a number already'),
+                border: OutlineInputBorder(), labelText: 'Type a number...'),
             onChanged: (text) => convert1(text),
           )),
       Padding(
@@ -127,7 +214,7 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
             isExpanded: true,
             underline: Container(
               height: 0,
-              color: Colors.blueAccent,
+              color: Colors.blue,
             ),
             onChanged: (String? value) {
               // This is called when the user selects an item.
@@ -142,7 +229,7 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
                 } catch (e) {}
               });
             },
-            items: lengthMeasurements),
+            items: measurements),
       ),
       Divider(
         thickness: 2.0,
@@ -157,9 +244,7 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
                 TextInputType.numberWithOptions(decimal: true, signed: true),
             controller: myController2,
             decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.numbers),
-                labelText: 'type a number already'),
+                border: OutlineInputBorder(), labelText: 'Type a number...'),
             onChanged: (text) => convert2(text),
           )),
       Padding(
@@ -186,7 +271,7 @@ class _NumberInputWidgetState extends State<NumberInputWidget> {
                 } catch (e) {}
               });
             },
-            items: lengthMeasurements),
+            items: measurements),
       )
     ]);
   }
