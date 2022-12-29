@@ -1,32 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
-final List<DropdownMenuItem<String>> temperatures = const [
-  DropdownMenuItem(child: Text("Celcius"), value: "2"),
-  DropdownMenuItem(child: Text("Fahrenheit"), value: "3"),
-  DropdownMenuItem(child: Text("Kelvin"), value: "4")
-];
-final List<DropdownMenuItem<String>> lengths = const [
-  DropdownMenuItem(child: Text("Kilometer"), value: "1000"),
-  DropdownMenuItem(child: Text("Hectometer"), value: "100"),
-  DropdownMenuItem(child: Text("Decameter"), value: "10"),
-  DropdownMenuItem(child: Text("Meter"), value: "1"),
-  DropdownMenuItem(child: Text("Decimeter"), value: "0.1"),
-  DropdownMenuItem(child: Text("Centimeter"), value: "0.01"),
-  DropdownMenuItem(child: Text("Millimeter"), value: "0.001"),
-  DropdownMenuItem(child: Text("Micrometer"), value: "0.000001"),
-  DropdownMenuItem(child: Text("Nanometer"), value: "0.000000001"),
-  DropdownMenuItem(child: Text("Miles"), value: "1609.344"),
-  DropdownMenuItem(child: Text("Yard"), value: "0.9144"),
-  DropdownMenuItem(child: Text("Foot"), value: "0.3048"),
-  DropdownMenuItem(child: Text("Inch"), value: "0.0254"),
-  DropdownMenuItem(child: Text("Nautical Mile"), value: "0.000539957"),
-  DropdownMenuItem(child: Text("Parsec"), value: "30856775812800000"),
-  DropdownMenuItem(child: Text("Light Year"), value: "9460730472580000"),
-  DropdownMenuItem(
-      child: Text("Planck Length"),
-      value: "161605000000000000000000000000000000")
-];
+import 'package:math_parser/math_parser.dart';
 
 String currentMeasurement = "lengths";
 
@@ -76,7 +51,7 @@ class MyHomePage extends StatelessWidget {
                     return [
                       PopupMenuItem<int>(
                         padding: EdgeInsets.only(right: 50, left: 20),
-                        value: 1,
+                        value: 0,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -132,7 +107,7 @@ class MyHomePage extends StatelessWidget {
                       ),
                       PopupMenuItem<int>(
                         padding: EdgeInsets.only(right: 50, left: 20),
-                        value: 1,
+                        value: 2,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -164,11 +139,11 @@ class MyHomePage extends StatelessWidget {
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => MyHomePage()));
                     } else if (value == 1) {
-                      currentMeasurement = "volumes";
+                      currentMeasurement = "lengths";
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => MyHomePage()));
                     } else if (value == 2) {
-                      currentMeasurement = "lengths";
+                      currentMeasurement = "volumes";
                       print(currentMeasurement);
                       Navigator.of(context).pushReplacement(MaterialPageRoute(
                           builder: (context) => MyHomePage()));
@@ -194,8 +169,27 @@ class _ConversionFormState extends State<ConversionForm> {
   double numberValue2 = 0;
   double conversionFactor = 1;
 
+  String unit1 = "1";
+  String unit2 = "1";
   String conversionFactor1 = '1';
   String conversionFactor2 = '1';
+
+  Map temperatureFormulas = {
+    "2": {
+      "name": "fahrenheit",
+      "toCanonical": "(x-32)*5/9",
+      "fromCanonical": "9/5*x + 32"
+    },
+    "3": {
+      "name": "kelvin",
+      "toCanonical": "x-273.15",
+      "fromCanonical": "x+273.15"
+    },
+    "1": {"name": "celsius", "toCanonical": "x", "fromCanonical": "x"}
+  };
+
+  num c = MathNodeExpression.fromString("(x - 32) * 5/9", variableNames: {'x'})
+      .calc(MathVariableValues({'x': 30}));
 
   @override
   void dispose() {
@@ -260,18 +254,17 @@ class _ConversionFormState extends State<ConversionForm> {
       ];
     } else if (currentMeasurement == "temperatures") {
       measurements = const [
-        DropdownMenuItem(child: Text("Celcius"), value: "1"),
-        DropdownMenuItem(child: Text("Fahrenheit"), value: "3"),
-        DropdownMenuItem(child: Text("Kelvin"), value: "4"),
+        DropdownMenuItem(child: Text("Celsius"), value: "1"),
+        DropdownMenuItem(child: Text("Fahrenheit"), value: "2"),
+        DropdownMenuItem(child: Text("Kelvin"), value: "3"),
       ];
     } else if (currentMeasurement == "volumes") {
       measurements = const [
         DropdownMenuItem(child: Text("Liter"), value: "1"),
       ];
     }
-    print("HERE");
-    print(measurements);
     return Column(children: <Widget>[
+      Text(c.toString()),
       Padding(
           padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           child: TextField(
@@ -288,7 +281,7 @@ class _ConversionFormState extends State<ConversionForm> {
       Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: DropdownButton<String>(
-            value: conversionFactor1,
+            value: unit1,
             icon: const Icon(Icons.arrow_drop_down),
             style: const TextStyle(color: Colors.black),
             isExpanded: true,
@@ -299,14 +292,29 @@ class _ConversionFormState extends State<ConversionForm> {
             onChanged: (String? value) {
               // This is called when the user selects an item.
               setState(() {
-                conversionFactor1 = value!;
-                conversionFactor = double.parse(conversionFactor1) /
-                    double.parse(conversionFactor2);
+                unit1 = value!;
+                Map formulas1 = temperatureFormulas[unit1];
+                Map formulas2 = temperatureFormulas[unit2];
+                String toCanonical = formulas2["toCanonical"];
+                String fromCanonical = formulas1["fromCanonical"];
+                print("to: " + toCanonical);
+                print("from: " + fromCanonical);
                 try {
-                  myController1.text =
-                      (double.parse(myController2.text) / conversionFactor)
-                          .toString();
-                } catch (e) {}
+                  MathExpression exp = MathNodeExpression.fromString(
+                      toCanonical,
+                      variableNames: {'x'});
+                  num? canonicalValue = exp.calc(MathVariableValues(
+                      {'x': double.parse(myController2.text)}));
+                  print("Canonical: " + canonicalValue.toString());
+                  // Convert the result from canonical
+                  exp = MathNodeExpression.fromString(fromCanonical,
+                      variableNames: {'x'});
+                  myController1.text = exp
+                      .calc(MathVariableValues({'x': canonicalValue!}))
+                      .toString();
+                } catch (e) {
+                  print(e.toString());
+                }
               });
             },
             items: measurements),
@@ -330,7 +338,7 @@ class _ConversionFormState extends State<ConversionForm> {
       Padding(
         padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
         child: DropdownButton<String>(
-            value: conversionFactor2,
+            value: unit2,
             icon: const Icon(Icons.arrow_drop_down),
             style: const TextStyle(color: Colors.black),
             isExpanded: true,
@@ -340,15 +348,31 @@ class _ConversionFormState extends State<ConversionForm> {
             ),
             onChanged: (String? value) {
               // This is called when the user selects an item.
+
               setState(() {
-                conversionFactor2 = value!;
-                conversionFactor = double.parse(conversionFactor1) /
-                    double.parse(conversionFactor2);
+                unit2 = value!;
+                Map formulas1 = temperatureFormulas[unit1];
+                Map formulas2 = temperatureFormulas[unit2];
+                String toCanonical = formulas1["toCanonical"];
+                String fromCanonical = formulas2["fromCanonical"];
+                print("to: " + toCanonical);
+                print("from: " + fromCanonical);
                 try {
-                  myController2.text =
-                      (double.parse(myController1.text) * conversionFactor)
-                          .toString();
-                } catch (e) {}
+                  MathExpression exp = MathNodeExpression.fromString(
+                      toCanonical,
+                      variableNames: {'x'});
+                  num? canonicalValue = exp.calc(MathVariableValues(
+                      {'x': double.parse(myController1.text)}));
+                  print("Canonical: " + canonicalValue.toString());
+                  // Convert the result from canonical
+                  exp = MathNodeExpression.fromString(fromCanonical,
+                      variableNames: {'x'});
+                  myController2.text = exp
+                      .calc(MathVariableValues({'x': canonicalValue!}))
+                      .toString();
+                } catch (e) {
+                  print(e.toString());
+                }
               });
             },
             items: measurements),
