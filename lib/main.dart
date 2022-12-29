@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Unit Converter',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -55,25 +56,104 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: Text("Popup Menu on AppBar"),
-            backgroundColor: Colors.redAccent,
+            elevation: 0,
+            title: Text('Unit Converter',
+                style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
+            backgroundColor: Colors.grey.shade50,
             actions: [
               PopupMenuButton(
-                  // add icon, by default "3 dot" icon
-                  icon: Icon(Icons.thermostat),
+                  icon: Icon(
+                    Icons.thermostat,
+                    color: Color.fromARGB(255, 87, 87, 87),
+                  ),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5)
+                          .copyWith(topRight: Radius.circular(0))),
+                  padding: EdgeInsets.all(10),
+                  elevation: 10,
+                  color: Colors.grey.shade100,
                   itemBuilder: (context) {
                     return [
                       PopupMenuItem<int>(
-                        value: 0,
-                        child: Text("Temperature"),
-                      ),
-                      PopupMenuItem<int>(
+                        padding: EdgeInsets.only(right: 50, left: 20),
                         value: 1,
-                        child: Text("Volume"),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.thermostat_outlined,
+                                  size: 20,
+                                  color: Colors.black,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Temperature',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                       PopupMenuItem<int>(
-                        value: 2,
-                        child: Text("Length"),
+                        padding: EdgeInsets.only(right: 50, left: 20),
+                        value: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.straighten_outlined,
+                                  size: 20,
+                                  color: Colors.black,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Length',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem<int>(
+                        padding: EdgeInsets.only(right: 50, left: 20),
+                        value: 1,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.science_outlined,
+                                    size: 20, color: Colors.black),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Volume',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ];
                   },
@@ -210,7 +290,7 @@ class _ConversionFormState extends State<ConversionForm> {
         child: DropdownButton<String>(
             value: conversionFactor1,
             icon: const Icon(Icons.arrow_drop_down),
-            style: const TextStyle(color: Colors.blue),
+            style: const TextStyle(color: Colors.black),
             isExpanded: true,
             underline: Container(
               height: 0,
@@ -252,11 +332,11 @@ class _ConversionFormState extends State<ConversionForm> {
         child: DropdownButton<String>(
             value: conversionFactor2,
             icon: const Icon(Icons.arrow_drop_down),
-            style: const TextStyle(color: Colors.blue),
+            style: const TextStyle(color: Colors.black),
             isExpanded: true,
             underline: Container(
               height: 0,
-              color: Colors.blueAccent,
+              color: Colors.black,
             ),
             onChanged: (String? value) {
               // This is called when the user selects an item.
