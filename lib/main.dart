@@ -31,125 +31,11 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            elevation: 0,
-            title: Text('Unit Converter',
-                style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
-            backgroundColor: Colors.grey.shade50,
-            actions: [
-              PopupMenuButton(
-                  icon: Icon(
-                    Icons.thermostat,
-                    color: Color.fromARGB(255, 87, 87, 87),
-                  ),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)
-                          .copyWith(topRight: Radius.circular(0))),
-                  padding: EdgeInsets.all(10),
-                  elevation: 10,
-                  color: Colors.grey.shade100,
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem<int>(
-                        padding: EdgeInsets.only(right: 50, left: 20),
-                        value: 0,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.thermostat_outlined,
-                                  size: 20,
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'Temperature',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<int>(
-                        padding: EdgeInsets.only(right: 50, left: 20),
-                        value: 1,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.straighten_outlined,
-                                  size: 20,
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'Length',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      PopupMenuItem<int>(
-                        padding: EdgeInsets.only(right: 50, left: 20),
-                        value: 2,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(Icons.science_outlined,
-                                    size: 20, color: Colors.black),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'Volume',
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ];
-                  },
-                  onSelected: (value) {
-                    if (value == 0) {
-                      currentMeasurement = "temperatures";
-                      print(currentMeasurement);
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => MyHomePage()));
-                    } else if (value == 1) {
-                      currentMeasurement = "lengths";
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => MyHomePage()));
-                    } else if (value == 2) {
-                      currentMeasurement = "volumes";
-                      print(currentMeasurement);
-                      Navigator.of(context).pushReplacement(MaterialPageRoute(
-                          builder: (context) => MyHomePage()));
-                    }
-                  })
-            ]),
+          elevation: 0,
+          title: Text('Unit Converter',
+              style: TextStyle(color: Color.fromARGB(255, 0, 0, 0))),
+          backgroundColor: Colors.grey.shade50,
+        ),
         body: ConversionForm());
   }
 }
@@ -167,29 +53,107 @@ class _ConversionFormState extends State<ConversionForm> {
 
   double numberValue1 = 0;
   double numberValue2 = 0;
-  double conversionFactor = 1;
 
   String unit1 = "1";
   String unit2 = "1";
-  String conversionFactor1 = '1';
-  String conversionFactor2 = '1';
 
-  Map temperatureFormulas = {
-    "2": {
-      "name": "fahrenheit",
-      "toCanonical": "(x-32)*5/9",
-      "fromCanonical": "9/5*x + 32"
-    },
-    "3": {
-      "name": "kelvin",
-      "toCanonical": "x-273.15",
-      "fromCanonical": "x+273.15"
-    },
-    "1": {"name": "celsius", "toCanonical": "x", "fromCanonical": "x"}
+  Map formulas = {
+    "temperatures": [
+      {"name": "celsius", "toCanonical": "x", "fromCanonical": "x"},
+      {
+        "name": "fahrenheit",
+        "toCanonical": "(x-32)*5/9",
+        "fromCanonical": "9/5*x + 32"
+      },
+      {"name": "kelvin", "toCanonical": "x-273.15", "fromCanonical": "x+273.15"}
+    ],
+    "lengths": [
+      {"name": "meter", "toCanonical": "x", "fromCanonical": "x"},
+      {
+        "name": "inch",
+        "toCanonical": "x / 39.370079",
+        "fromCanonical": "x * 39.370079"
+      },
+      {
+        "name": "centimeter",
+        "toCanonical": "x / 100",
+        "fromCanonical": "x * 100"
+      },
+      {
+        "name": "feet",
+        "toCanonical": "x / 3.28084",
+        "fromCanonical": "x * 3.28084"
+      },
+      {
+        "name": "mile",
+        "toCanonical": "x / 0.000621371",
+        "fromCanonical": "x * 0.000621371"
+      },
+      {
+        "name": "kilometer",
+        "toCanonical": "x / 0.001",
+        "fromCanonical": "x * 0.001"
+      },
+      {
+        "name": "yard",
+        "toCanonical": "x / 1.09361",
+        "fromCanonical": "x * 1.09361"
+      }
+    ],
+    "volumes": [
+      {"name": "liter", "toCanonical": "x", "fromCanonical": "x"},
+      {
+        "name": "gallon",
+        "toCanonical": "x / 0.264172",
+        "fromCanonical": "x * 0.264172"
+      },
+      {
+        "name": "milliliter",
+        "toCanonical": "x / 1000",
+        "fromCanonical": "x * 1000"
+      },
+      {
+        "name": "cup",
+        "toCanonical": "x / 4.22675",
+        "fromCanonical": "x * 4.22675"
+      },
+      {
+        "name": "fluid ounce",
+        "toCanonical": "x / 33.814",
+        "fromCanonical": "x * 33.814"
+      },
+      {
+        "name": "liquid quart",
+        "toCanonical": "x / 1.05669",
+        "fromCanonical": "x * 1.05669"
+      },
+      {
+        "name": "tablespoon",
+        "toCanonical": "x / 67.628",
+        "fromCanonical": "x * 67.628"
+      },
+      {
+        "name": "teaspoon",
+        "toCanonical": "x / 202.884",
+        "fromCanonical": "x * 202.884"
+      },
+      {
+        "name": "cubic meter",
+        "toCanonical": "x / 0.001",
+        "fromCanonical": "x * 0.001"
+      },
+      {
+        "name": "cubic feet",
+        "toCanonical": "x / 0.0353147",
+        "fromCanonical": "x * 0.0353147"
+      },
+      {
+        "name": "cubic inch",
+        "toCanonical": "x / 61.0237",
+        "fromCanonical": "x * 61.0237"
+      },
+    ]
   };
-
-  num c = MathNodeExpression.fromString("(x - 32) * 5/9", variableNames: {'x'})
-      .calc(MathVariableValues({'x': 30}));
 
   @override
   void dispose() {
@@ -206,9 +170,12 @@ class _ConversionFormState extends State<ConversionForm> {
         myController2.text = "";
         return;
       }
-      numberValue1 = double.parse(text);
-      numberValue2 = numberValue1 * conversionFactor;
-      myController2.text = numberValue2.toString();
+      myController2.text = convert(
+              formulas[currentMeasurement][int.parse(unit1) - 1]["toCanonical"],
+              formulas[currentMeasurement][int.parse(unit2) - 1]
+                  ["fromCanonical"],
+              num.parse(text))
+          .toString();
     });
   }
 
@@ -220,10 +187,30 @@ class _ConversionFormState extends State<ConversionForm> {
         myController1.text = "";
         return;
       }
-      numberValue2 = double.parse(text);
-      numberValue1 = numberValue2 / conversionFactor;
-      myController1.text = numberValue1.toString();
+      myController1.text = convert(
+              formulas[currentMeasurement][int.parse(unit2) - 1]["toCanonical"],
+              formulas[currentMeasurement][int.parse(unit1) - 1]
+                  ["fromCanonical"],
+              num.parse(text))
+          .toString();
     });
+  }
+
+  num? convert(
+      String toCanonicalFormula, String fromCanonicalFormula, num fromValue) {
+    print("Value to convert: " + fromValue.toString());
+    print("To:" + toCanonicalFormula);
+    MathExpression exp =
+        MathNodeExpression.fromString(toCanonicalFormula, variableNames: {'x'});
+    num? canonicalValue = exp.calc(MathVariableValues({'x': fromValue}));
+    print("Canonical value: " + canonicalValue.toString());
+    // Convert the result from canonical
+    print("From: " + fromCanonicalFormula);
+    exp = MathNodeExpression.fromString(fromCanonicalFormula,
+        variableNames: {'x'});
+    num? convertedValue = exp.calc(MathVariableValues({'x': canonicalValue!}));
+    print("Converted value: " + convertedValue.toString());
+    return convertedValue;
   }
 
   @override
@@ -231,26 +218,13 @@ class _ConversionFormState extends State<ConversionForm> {
     List<DropdownMenuItem<String>> measurements = [];
     if (currentMeasurement == "lengths") {
       measurements = const [
-        DropdownMenuItem(child: Text("Kilometer"), value: "1000"),
-        DropdownMenuItem(child: Text("Hectometer"), value: "100"),
-        DropdownMenuItem(child: Text("Decameter"), value: "10"),
         DropdownMenuItem(child: Text("Meter"), value: "1"),
-        DropdownMenuItem(child: Text("Decimeter"), value: "0.1"),
-        DropdownMenuItem(child: Text("Centimeter"), value: "0.01"),
-        DropdownMenuItem(child: Text("Millimeter"), value: "0.001"),
-        DropdownMenuItem(child: Text("Micrometer"), value: "0.000001"),
-        DropdownMenuItem(child: Text("Nanometer"), value: "0.000000001"),
-        DropdownMenuItem(child: Text("Miles"), value: "1609.344"),
-        DropdownMenuItem(child: Text("Yard"), value: "0.9144"),
-        DropdownMenuItem(child: Text("Foot"), value: "0.3048"),
-        DropdownMenuItem(child: Text("Inch"), value: "0.0254"),
-        DropdownMenuItem(child: Text("Nautical Mile"), value: "0.000539957"),
-        DropdownMenuItem(child: Text("Parsec"), value: "30856775812800000"),
-        DropdownMenuItem(child: Text("Light Year"), value: "9460730472580000"),
-        DropdownMenuItem(
-          child: Text("Planck Length"),
-          value: "161605000000000000000000000000000000",
-        )
+        DropdownMenuItem(child: Text("Inch"), value: "2"),
+        DropdownMenuItem(child: Text("Centimeter"), value: "3"),
+        DropdownMenuItem(child: Text("Feet"), value: "4"),
+        DropdownMenuItem(child: Text("Mile"), value: "5"),
+        DropdownMenuItem(child: Text("Kilometer"), value: "6"),
+        DropdownMenuItem(child: Text("Yard"), value: "7"),
       ];
     } else if (currentMeasurement == "temperatures") {
       measurements = const [
@@ -261,10 +235,99 @@ class _ConversionFormState extends State<ConversionForm> {
     } else if (currentMeasurement == "volumes") {
       measurements = const [
         DropdownMenuItem(child: Text("Liter"), value: "1"),
+        DropdownMenuItem(child: Text("Gallon"), value: "2"),
+        DropdownMenuItem(child: Text("Milliliter"), value: "3"),
+        DropdownMenuItem(child: Text("Cup"), value: "4"),
+        DropdownMenuItem(child: Text("Fluid Ounce"), value: "5"),
+        DropdownMenuItem(child: Text("Liquid Quart"), value: "6"),
+        DropdownMenuItem(child: Text("Tablespoon"), value: "7"),
+        DropdownMenuItem(child: Text("Teaspoon"), value: "8"),
+        DropdownMenuItem(child: Text("Cubic Meter"), value: "9"),
+        DropdownMenuItem(child: Text("Cubic Feet"), value: "10"),
+        DropdownMenuItem(child: Text("Cubic Inches"), value: "11"),
       ];
     }
     return Column(children: <Widget>[
-      Text(c.toString()),
+      Padding(
+          padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
+          child: DropdownButton<String>(
+              value: currentMeasurement == "lengths"
+                  ? "1"
+                  : currentMeasurement == "temperatures"
+                      ? "2"
+                      : "3",
+              items: [
+                DropdownMenuItem(
+                    value: "1",
+                    child: Row(
+                      children: [
+                        Icon(Icons.straighten_outlined,
+                            size: 20, color: Colors.black),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          ' Length',
+                          style: TextStyle(
+                            color: Colors.black,
+                            //fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ],
+                    )),
+                DropdownMenuItem(
+                    value: "2",
+                    child: Row(
+                      children: [
+                        Icon(Icons.thermostat_outlined,
+                            size: 20, color: Colors.black),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          ' Temperature',
+                          style: TextStyle(
+                            color: Colors.black,
+                            // fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ],
+                    )),
+                DropdownMenuItem(
+                    value: "3",
+                    child: Row(
+                      children: [
+                        Icon(Icons.science_outlined,
+                            size: 20, color: Colors.black),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          ' Volume',
+                          style: TextStyle(
+                            color: Colors.black,
+                            // fontWeight: FontWeight.w500
+                          ),
+                        ),
+                      ],
+                    )),
+              ],
+              onChanged: (String? value) {
+                if (value == "1") {
+                  currentMeasurement = "lengths";
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => MyHomePage()));
+                } else if (value == "2") {
+                  currentMeasurement = "temperatures";
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => MyHomePage()));
+                } else if (value == "3") {
+                  currentMeasurement = "volumes";
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => MyHomePage()));
+                }
+                // do something here
+              })),
       Padding(
           padding: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0.0),
           child: TextField(
@@ -293,24 +356,13 @@ class _ConversionFormState extends State<ConversionForm> {
               // This is called when the user selects an item.
               setState(() {
                 unit1 = value!;
-                Map formulas1 = temperatureFormulas[unit1];
-                Map formulas2 = temperatureFormulas[unit2];
-                String toCanonical = formulas2["toCanonical"];
-                String fromCanonical = formulas1["fromCanonical"];
-                print("to: " + toCanonical);
-                print("from: " + fromCanonical);
                 try {
-                  MathExpression exp = MathNodeExpression.fromString(
-                      toCanonical,
-                      variableNames: {'x'});
-                  num? canonicalValue = exp.calc(MathVariableValues(
-                      {'x': double.parse(myController2.text)}));
-                  print("Canonical: " + canonicalValue.toString());
-                  // Convert the result from canonical
-                  exp = MathNodeExpression.fromString(fromCanonical,
-                      variableNames: {'x'});
-                  myController1.text = exp
-                      .calc(MathVariableValues({'x': canonicalValue!}))
+                  myController1.text = convert(
+                          formulas[currentMeasurement][int.parse(unit2) - 1]
+                              ["toCanonical"],
+                          formulas[currentMeasurement][int.parse(unit1) - 1]
+                              ["fromCanonical"],
+                          num.parse(myController2.text))
                       .toString();
                 } catch (e) {
                   print(e.toString());
@@ -351,24 +403,13 @@ class _ConversionFormState extends State<ConversionForm> {
 
               setState(() {
                 unit2 = value!;
-                Map formulas1 = temperatureFormulas[unit1];
-                Map formulas2 = temperatureFormulas[unit2];
-                String toCanonical = formulas1["toCanonical"];
-                String fromCanonical = formulas2["fromCanonical"];
-                print("to: " + toCanonical);
-                print("from: " + fromCanonical);
                 try {
-                  MathExpression exp = MathNodeExpression.fromString(
-                      toCanonical,
-                      variableNames: {'x'});
-                  num? canonicalValue = exp.calc(MathVariableValues(
-                      {'x': double.parse(myController1.text)}));
-                  print("Canonical: " + canonicalValue.toString());
-                  // Convert the result from canonical
-                  exp = MathNodeExpression.fromString(fromCanonical,
-                      variableNames: {'x'});
-                  myController2.text = exp
-                      .calc(MathVariableValues({'x': canonicalValue!}))
+                  myController2.text = convert(
+                          formulas[currentMeasurement][int.parse(unit1) - 1]
+                              ["toCanonical"],
+                          formulas[currentMeasurement][int.parse(unit2) - 1]
+                              ["fromCanonical"],
+                          num.parse(myController1.text))
                       .toString();
                 } catch (e) {
                   print(e.toString());
