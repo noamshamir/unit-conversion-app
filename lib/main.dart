@@ -251,6 +251,11 @@ class _ConversionFormState extends State<ConversionForm> {
       Padding(
           padding: EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 0.0),
           child: DropdownButton<String>(
+              underline: Container(
+                height: 0,
+                color: Colors.blue,
+              ),
+              isExpanded: true,
               value: currentMeasurement == "lengths"
                   ? "1"
                   : currentMeasurement == "temperatures"
